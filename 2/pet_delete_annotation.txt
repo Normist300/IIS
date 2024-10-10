@@ -1,0 +1,22 @@
+	
+			
+delete:
+      description: Удалить питомца по идентификатору (ID)
+      operationId: deletePet
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор питомца для удаления (ID)
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Ответ
+        default:
+          description: Неожиданная ошибка 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
