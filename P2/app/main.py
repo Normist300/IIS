@@ -9,7 +9,7 @@ from typing import List, Optional, Union
 from fastapi import FastAPI, Path
 from pydantic import conint
 
-from .models import Error, Pet
+from models import Error, Pet
 
 app = FastAPI(
     version='1.0.0',
@@ -18,6 +18,7 @@ app = FastAPI(
     servers=[{'url': 'http://127.0.0.1:8000/'}, {'url': 'http://api.myserver.ru/v1'}],
 )
 
+pets_dict = {"0": Pet(id = 0, name = "dog")}
 
 @app.get(
     '/pets',
@@ -29,7 +30,7 @@ def list_pets(limit: Optional[conint(le=100)] = None) -> Union[List[Pet], Error]
     """
     список всех питомцев
     """
-    pass
+    return list(pets_dict.values())
 
 
 @app.post(
@@ -39,12 +40,15 @@ def create_pets(body: Pet) -> Optional[Error]:
     """
     Создание питомца
     """
-    pass
+    id = len(pets_dict) + 1
+    new_pet = Pet(id = id, name = f"New pet #{id}")
+    pets_dict[id] = new_pet
+    return {"result": id}
 
 
 @app.get(
     '/pets/{petId}',
-    response_model=Pet,
+    response_model=Union[Pet, Error],
     responses={'default': {'model': Error}},
     tags=['pets'],
 )
@@ -52,4 +56,6 @@ def show_pet_by_id(pet_id: str = Path(..., alias='petId')) -> Union[Pet, Error]:
     """
     Информация о питомце
     """
-    pass
+    if pets_dict.get(pet_id) is not None:
+        return pets_dict[pet_id]
+    return Error(code = 0, message = f"Нету челика №{pet_id}")
