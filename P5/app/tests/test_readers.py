@@ -29,11 +29,12 @@ def test_create_reader():
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == "Марина"
-    assert data["id"] == 9
+    
+    assert data["id"] == 13
 
     # добавьте код проверяющий что читаль действительно создался с нужными параметрами
 
-    reader_id = 9
+    reader_id = 13
     # Получаем читателя
     response = client.get(f"/readers/{reader_id}/")
     print(response.status_code)
@@ -51,17 +52,25 @@ def test_get_reader():
     # assert data["id"] == 7
     # print(data["id"])
 
-    reader_id = 7
+    reader_id = 13
     # Получаем читателя
     response = client.get(f"/readers/{reader_id}/")
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == reader_id
-    assert data["name"] == "string"
+    assert data["name"] == "Марина"
 
 def test_delete_reader():
-    id = 1
+    id = 13
     response = client.delete(f"/readers/{id}/")
+    assert response.status_code == 200
 
-test_create_reader()
+def test_all_readers():
+    response = client.get(f"/readers/")
+    assert response.status_code == 200
+    assert len(response.json()) == 12
+
+# test_create_reader()
 # test_get_reader()
+# test_delete_reader()
+# test_all_readers()
